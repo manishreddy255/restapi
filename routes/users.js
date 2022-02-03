@@ -1,26 +1,9 @@
 import express from "express";
-import { v4 as uuidv4 } from 'uuid'
-
+import { getUser, getUserById, createUser, deleteUserById, patchUserById } from '../contorllers/users.js'
 const router = express.Router();
 
-const users = [
-    {
-        firstName: "john",
-        lastName: "doe",
-        age: 30
-    },
-    {
-        firstName: "jane",
-        lastName: "doe",
-        age: 25
-    }
-]
-
 // all routes in this are starting with /users
-router.get("/", (req, res) => {
-    console.log(users)
-    res.send(users)
-})
+router.get("/", getUser)
 
 
 // now when we push teh user which we got from the post request
@@ -28,18 +11,22 @@ router.get("/", (req, res) => {
 // and to get the dat from post we use midle ware
 // we will use body parser
 // and we will use json middleware
-router.post("/", (req, res) => {
-    console.log("post route reached")
-    console.log(req.body)
-    const userId = uuidv4();
-    const user = req.body
-    const userWithId = { ...user, id: userId }
+router.post("/", createUser)
 
-    users.push(userWithId)
+// users/:id => id being 2 or anything
+// we can access the id by using req.params.id
+router.get("/:id", getUserById)
 
-    // we can send a response to the place where the request was made
-    // that the post was reached
-    res.send(`post route reached ${req.body.firstName} is added to the database`)
-})
+
+// now we can get data based on the id of the data
+// so we can also delete the data based on the id
+
+router.delete("/:id", deleteUserById)
+
+// put -> is used to completely overide something
+// patch -> is used to partially modify something
+
+router.patch("/:id", patchUserById)
+
 
 export default router;
